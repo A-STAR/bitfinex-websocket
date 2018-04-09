@@ -4,20 +4,18 @@
   align-items: center;
   padding-top: 40px;
 
-  table,
-  th,
-  td {
+  table {
     border-collapse: collapse;
+  }
+
+  tr:nth-child(even) {
+    background-color: rgba(0, 0, 0, .05);
   }
 
   th,
   td {
     padding: 15px;
     border: 1px solid #dee2e6;
-  }
-
-  tr:nth-child(even) {
-    background-color: rgba(0, 0, 0, .05);
   }
 
   th {
