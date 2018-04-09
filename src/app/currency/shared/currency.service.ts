@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Observer } from 'rxjs/Observer';
+import { map } from 'rxjs/operators/map';
 
 const URI = 'wss://api.bitfinex.com/ws';
 
@@ -8,7 +9,8 @@ const URI = 'wss://api.bitfinex.com/ws';
 export class CurrencyService {
 
   private socket: WebSocket;
-  private prices: number[] = [];
+  private data: number[] = [];
+  private data$: Observable<number[]>;
   prices$: Observable<number[]>;
 
   constructor() { }
@@ -24,7 +26,12 @@ export class CurrencyService {
 
     this.socket.onopen = () => this.socket.send(JSON.stringify(event));
 
-    this.prices$ = Observable.create(this.socketMessage.bind(this));
+    this.data$ = Observable.create(this.socketMessage.bind(this));
+
+    this.prices$ = this.data$.pipe(
+      map((response: any[]) => response.filter(data => data[7])),
+      map((response: any[]) => response.map(data => data[7]))
+    );
   }
 
   private socketMessage(observer: Observer<number[]>) {
@@ -33,13 +40,9 @@ export class CurrencyService {
 
       const data: any = JSON.parse(event.data);
 
-      if (data[7]) {
-        const lastPrice: number = data[7];
+      this.data.unshift(data);
 
-        this.prices.unshift(lastPrice);
-
-        observer.next(this.prices);
-      }
+      observer.next(this.data);
 
     };
 
