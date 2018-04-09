@@ -7,16 +7,35 @@
   table,
   th,
   td {
-    border: 1px solid #dee2e6;
     border-collapse: collapse;
   }
 
   th,
   td {
     padding: 15px;
+    border: 1px solid #dee2e6;
   }
 
   tr:nth-child(even) {
     background-color: rgba(0, 0, 0, .05);
   }
+
+  th {
+    border-bottom: lightgreen;
+  }
+
+  @keyframes update {
+    from { transform: scale(1.25); }
+    to { transform: scale(1); }
+  }
+
+  tr:first-child + tr {
+    background-color: lightgreen;
+    animation: update 1s;
+  }
+
+  tr:first-child + tr td {
+    border: 1px solid lightgreen;
+  }
+
 }
