@@ -1,1 +1,14 @@
-<h1>Live Currency</h1>
+<h1>Bitfinex Live Currency</h1>
+
+<table *ngIf="prices.length; else noprice">
+  <tr>
+    <th>BTC/USD</th>
+  </tr>
+  <tr *ngFor="let price of prices">
+    <td>{{ price | currency }}</td>
+  </tr>
+</table>
+
+<ng-template #noprice>
+  <p>WebSocket emits…</p>
+</ng-template>
