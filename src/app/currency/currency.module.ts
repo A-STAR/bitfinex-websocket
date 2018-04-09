@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 
 import { CurrencyRoutingModule } from './currency-routing.module';
 
+import { CurrencyService } from './shared/currency.service';
+
 import { CurrencyComponent } from './currency.component';
 
 @NgModule({
@@ -10,6 +12,7 @@ import { CurrencyComponent } from './currency.component';
     CommonModule,
     CurrencyRoutingModule
   ],
-  declarations: [CurrencyComponent]
+  declarations: [CurrencyComponent],
+  providers: [CurrencyService]
 })
 export class CurrencyModule { }
