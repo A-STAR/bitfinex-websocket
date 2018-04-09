@@ -1,10 +1,10 @@
 <h1>Bitfinex Live Currency</h1>
 
-<table *ngIf="prices.length; else noprice">
+<table *ngIf="currency.prices$.value.length; else noprice">
   <tr>
     <th>BTC/USD</th>
   </tr>
-  <tr *ngFor="let price of prices">
+  <tr *ngFor="let price of currency.prices$ | async | slice:0:9">
     <td>{{ price | currency }}</td>
   </tr>
 </table>

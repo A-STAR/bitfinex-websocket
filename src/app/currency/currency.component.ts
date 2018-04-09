@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+
+import { CurrencyService } from './shared/currency.service';
 
 @Component({
   selector: 'bfx-currency',
@@ -7,43 +10,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CurrencyComponent implements OnInit {
 
-  socket: WebSocket;
-  prices: number[] = [];
-
-  constructor() { }
+  constructor(public currency: CurrencyService) { }
 
   ngOnInit() {
-    this.initSocket();
-
-    this.socketMessage();
-  }
-
-  private initSocket() {
-    this.socket = new WebSocket('wss://api.bitfinex.com/ws');
-
-    const event = {
-      event: 'subscribe',
-      channel: 'ticker',
-      pair: 'BTCUSD'
-    };
-
-    this.socket.onopen = () => this.socket.send(JSON.stringify(event));
-  }
-
-  private socketMessage() {
-
-    this.socket.onmessage = (event: MessageEvent) => {
-
-      const data: any = JSON.parse(event.data);
-
-      if (data[7]) {
-        const lastPrice: number = data[7];
-
-        this.prices.unshift(lastPrice);
-      }
-
-    };
-
+    this.currency.initSocket();
   }
 
 }
