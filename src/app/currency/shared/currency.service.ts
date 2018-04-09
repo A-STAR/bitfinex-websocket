@@ -1,51 +1,39 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { Observer } from 'rxjs/Observer';
-import { map } from 'rxjs/operators/map';
+import { Subject } from 'rxjs/Subject';
+import { map, filter, scan } from 'rxjs/operators';
 
-const URI = 'wss://api.bitfinex.com/ws';
+import { WebSocketService } from '../../core/websocket.service';
 
 @Injectable()
 export class CurrencyService {
 
-  private socket: WebSocket;
-  private data: number[] = [];
-  private data$: Observable<number[]>;
+  private messages$: Subject<any>;
   prices$: Observable<number[]>;
 
-  constructor() { }
+  constructor(private ws: WebSocketService) {
+    this.init();
+  }
 
-  initSocket() {
-    this.socket = new WebSocket(URI);
-
-    const event = {
+  init() {
+    const message = {
       event: 'subscribe',
       channel: 'ticker',
       pair: 'BTCUSD'
     };
 
-    this.socket.onopen = () => this.socket.send(JSON.stringify(event));
+    this.messages$ = this.ws.connect(message);
 
-    this.data$ = Observable.create(this.socketMessage.bind(this));
-
-    this.prices$ = this.data$.pipe(
-      map((response: any[]) => response.filter(data => data[7])),
-      map((response: any[]) => response.map(data => data[7]))
+    this.prices$ = this.messages$.pipe(
+      map((event: MessageEvent) => JSON.parse(event.data)),
+      filter((data: any) => data[7] ? true : false),
+      map((data: any[]) => data[7]),
+      scan((prices: number[], price: number) => [price, ...prices], [])
     );
   }
 
-  private socketMessage(observer: Observer<number[]>) {
-
-    this.socket.onmessage = (event: MessageEvent) => {
-
-      const data: any = JSON.parse(event.data);
-
-      this.data.unshift(data);
-
-      observer.next(this.data);
-
-    };
-
+  send(message: Object) {
+    this.messages$.next(message);
   }
 
 }

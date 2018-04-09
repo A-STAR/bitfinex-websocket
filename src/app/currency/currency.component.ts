@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 import { CurrencyService } from './shared/currency.service';
 
@@ -13,7 +12,6 @@ export class CurrencyComponent implements OnInit {
   constructor(public currency: CurrencyService) { }
 
   ngOnInit() {
-    this.currency.initSocket();
   }
 
 }
